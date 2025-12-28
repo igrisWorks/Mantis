@@ -9,3 +9,5 @@ qdranrt-client
 python-dotenv
 streamlit
 openai
+
+65
