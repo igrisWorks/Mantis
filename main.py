@@ -1,3 +1,5 @@
+# main.py for Inngest function to ingest PDF files for RAG application
+
 import logging
 from fastapi import FastAPI
 import inngest
@@ -7,8 +9,9 @@ from dotenv import load_dotenv
 import uuid
 import datetime
 import os
-
-
+from data_loader import load_and_chunk_pdf, embed_texts
+from vector_db import QdrantStorage
+from custom_types import RAGChunkAndSrc, RAGUpsertResult, RAGSerachResult, RAGQueryResult
 
 load_dotenv()
 
