@@ -1,6 +1,7 @@
 # main.py for Inngest function to ingest PDF files for RAG application
 
 import logging
+from pickle import load
 from fastapi import FastAPI
 import inngest
 import inngest.fast_api
@@ -29,8 +30,18 @@ inngest_client = inngest.Inngest(
 )
 
 async def rag_ingest_pdf(ctx: inngest.Context):
-    return {"hello ": "world"}
+    def _load(ctx: inngest.Context) -> RAGChunkAndSrc:
+        pdf_path = ctx.event.data["pdf_path"]
+        source_id = ctx.event.data.get("source_id", pdf_path)
+        chunks = load_and_chunk_pdf(pdf_path)
+        return RAGChunkAndSrc(chunks=chunks, source_id=source_id)
 
+    def _upsert(chunks_and_src: RAGChunkAndSrc) -> RAGUpsertResult:
+        pass
+
+    chunks_and_src = await ctx.step.run(step_id="load-and-chunk", fn=lambda: _load(ctx), output_type=RAGChunkAndSrc)
+    ingested = await ctx.step.run("embed-and-upsert", lambda: _upsert(chunks_and_src), output_type=RAGUpsertResult)
+    return ingested.model_dump()
 
 app = FastAPI()
 
