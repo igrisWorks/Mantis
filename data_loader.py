@@ -1,5 +1,5 @@
 # reading pdf using llama index and chunkin
-from llama_index import download_loader
+import os
 from openai import OpenAI
 from dotenv import load_dotenv
 from llama_index.core.node_parser import SentenceSplitter
